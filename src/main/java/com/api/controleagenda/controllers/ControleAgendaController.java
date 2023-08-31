@@ -27,38 +27,39 @@ public class ControleAgendaController {
     }
 
     @PostMapping
-    public ResponseEntity<Object>saveControleAgenda(@RequestBody @Valid ControleAgendaDto controleAgendaDto){
-       if (controleAgendaService.existisByNomeDoCompromisso(controleAgendaDto.getNomeDoCompromisso())){
-           return ResponseEntity.status(HttpStatus.CONFLICT).body("Este compromisso já existe!");
-       }
-       if (controleAgendaService.existeCompromissoNoMesmoIntervalo(controleAgendaDto)) {
-           return ResponseEntity.status(HttpStatus.CONFLICT).body("Ja existe um compromisso neste horario!");
-       }
+    public ResponseEntity<Object> saveControleAgenda(@RequestBody @Valid ControleAgendaDto controleAgendaDto) {
+        if (controleAgendaService.existisByNomeDoCompromisso(controleAgendaDto.getNomeDoCompromisso())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este compromisso já existe!");
+        }
+
+        if (controleAgendaService.existeCompromissoNoMesmoIntervalo(controleAgendaDto)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ja existe um compromisso neste horario!");
+        }
         var controleAgendaModel = new ControleAgendaModel();
-       BeanUtils.copyProperties(controleAgendaDto, controleAgendaModel);
-       controleAgendaModel.setDataHoraRegistro(LocalDateTime.now(DateConfig.SAOPAULO_TIMEZONE));
-       var savedControleAgenda = controleAgendaService.save(controleAgendaModel);
-       return ResponseEntity.status(HttpStatus.CREATED).body(savedControleAgenda);
+        BeanUtils.copyProperties(controleAgendaDto, controleAgendaModel);
+        controleAgendaModel.setDataHoraRegistro(LocalDateTime.now(DateConfig.SAOPAULO_TIMEZONE));
+        var savedControleAgenda = controleAgendaService.save(controleAgendaModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedControleAgenda);
     }
 
     @GetMapping
-    public ResponseEntity<List<ControleAgendaModel>>getAllControleAgenda(){
+    public ResponseEntity<List<ControleAgendaModel>> getAllControleAgenda() {
         return ResponseEntity.status(HttpStatus.OK).body(controleAgendaService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneControleAgenda(@PathVariable(value = "id")UUID id){
+    public ResponseEntity<Object> getOneControleAgenda(@PathVariable(value = "id") UUID id) {
         Optional<ControleAgendaModel> controleAgendaModelOptional = controleAgendaService.findByid(id);
-        if (!controleAgendaModelOptional.isPresent()){
+        if (!controleAgendaModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Compromisso não encontrado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(controleAgendaModelOptional.get());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteControleAgenda(@PathVariable(value = "id")UUID id){
+    public ResponseEntity<Object> deleteControleAgenda(@PathVariable(value = "id") UUID id) {
         Optional<ControleAgendaModel> controleAgendaModelOptional = controleAgendaService.findByid(id);
-        if(!controleAgendaModelOptional.isPresent()){
+        if (!controleAgendaModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Compromisso não encontrado!");
         }
         controleAgendaService.delete(controleAgendaModelOptional.get());
@@ -66,9 +67,9 @@ public class ControleAgendaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateControleAgenda(@PathVariable(value = "id")UUID id, @RequestBody @Valid ControleAgendaDto controleAgendaDto){
+    public ResponseEntity<Object> updateControleAgenda(@PathVariable(value = "id") UUID id, @RequestBody @Valid ControleAgendaDto controleAgendaDto) {
         Optional<ControleAgendaModel> controleAgendaModelOptional = controleAgendaService.findByid(id);
-        if (!controleAgendaModelOptional.isPresent()){
+        if (!controleAgendaModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Compromisso não encontrado!");
         }
         var controleAgendaModel = controleAgendaModelOptional.get();
@@ -80,8 +81,6 @@ public class ControleAgendaController {
         controleAgendaModel.setStatusPgto(controleAgendaDto.isStatusPgto());
         return ResponseEntity.status(HttpStatus.OK).body(controleAgendaService.save(controleAgendaModel));
     }
-
-
 
 
 }

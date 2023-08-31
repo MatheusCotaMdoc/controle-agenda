@@ -43,33 +43,6 @@ public class ControleAgendaService {
     }
 
     public boolean existeCompromissoNoMesmoIntervalo(ControleAgendaDto novo){
-        List<ControleAgendaModel> lista = findAll();
-        for(ControleAgendaModel elemento : lista){
-            if (
-                    (
-                            novo.getDataCompromissoInicio().isEqual(elemento.getDataCompromissoInicio())
-                                    &&
-                                    novo.getDataCompromissoInicio().isEqual(elemento.getDataCompromissoFim())
-                                    &&
-                            novo.getDataCompromissoInicio().isAfter(elemento.getDataCompromissoInicio())
-                                    &&
-                                    novo.getDataCompromissoInicio().isBefore(elemento.getDataCompromissoFim())
-                    )
-                    ||
-                            (
-                                    novo.getDataCompromissoFim().isEqual(elemento.getDataCompromissoInicio())
-                                            &&
-                                            novo.getDataCompromissoFim().isEqual(elemento.getDataCompromissoFim())
-                                            &&
-                                    novo.getDataCompromissoFim().isAfter(elemento.getDataCompromissoInicio())
-                                    &&
-                                            novo.getDataCompromissoFim().isBefore(elemento.getDataCompromissoFim())
-                                    )
-                ){
-                return true;
-
-            }
-        }
-        return false;
+        return controleAgendaRepository.existeCompromissoNoMesmoIntervalo(novo.getDataCompromissoInicio(), novo.getDataCompromissoFim());
     }
 }
